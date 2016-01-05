@@ -24,6 +24,8 @@
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
     self.navigationItem.rightBarButtonItem = addButton;
     self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
+    
+    [self loadFile];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -40,11 +42,49 @@
     if (!self.objects) {
         self.objects = [[NSMutableArray alloc] init];
     }
-    [self.objects insertObject:[NSDate date] atIndex:0];
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:MM:SS ZZZ"];
+    NSString* title = [dateFormatter stringFromDate:[NSDate date]];
+    
+    [self.objects insertObject:title atIndex:0];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
     [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    
+    [self saveFile:title];
 }
 
+- (void) saveFile:(NSString*) title{
+    //获取路径
+    NSArray *documentPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *ourDocumentPath = [documentPaths objectAtIndex:0];
+    //生成文件
+    NSString *fileName = [ourDocumentPath stringByAppendingPathComponent:title];
+    NSLog(@"insert file path:%@",fileName);
+    NSString *test = @"TEST";
+//    [test writeToFile:fileName atomically:YES];
+    BOOL res=[test writeToFile:fileName atomically:YES encoding:NSUTF8StringEncoding error:nil];
+    if (res) {
+        NSLog(@"文件写入成功");
+    }else
+        NSLog(@"文件写入失败");
+}
+
+- (void) loadFile {
+    //获取路径
+    NSArray *documentPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *ourDocumentPath = [documentPaths objectAtIndex:0];
+    
+    NSArray<NSString*> *names = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:ourDocumentPath error:nil];
+    
+    if (!self.objects) {
+        self.objects = [[NSMutableArray alloc]init];
+    }
+    for (int i = 0; i!= [names count]; i++) {
+        [self.objects insertObject:[names objectAtIndex:i] atIndex:0];
+    }
+    
+}
 #pragma mark - Segues
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
