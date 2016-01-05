@@ -125,6 +125,15 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         [self.objects removeObjectAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        
+        NSFileManager *defaltManager = [NSFileManager defaultManager];
+        //获取路径
+        NSArray *documentPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *ourDocumentPath = [documentPaths objectAtIndex:0];
+        //file path
+        NSString *fileName = [ourDocumentPath stringByAppendingPathComponent:self.objects[indexPath.row]];
+        
+        [defaltManager removeItemAtPath:fileName error:nil];
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
     }
