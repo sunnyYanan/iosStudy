@@ -43,6 +43,8 @@
         self.objects = [[NSMutableArray alloc] init];
     }
     
+    
+    
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:MM:SS ZZZ"];
     NSString* title = [dateFormatter stringFromDate:[NSDate date]];
@@ -60,9 +62,8 @@
     NSString *ourDocumentPath = [documentPaths objectAtIndex:0];
     //生成文件
     NSString *fileName = [ourDocumentPath stringByAppendingPathComponent:title];
-    NSLog(@"insert file path:%@",fileName);
+//    NSLog(@"insert file path:%@",fileName);
     NSString *test = @"TEST";
-//    [test writeToFile:fileName atomically:YES];
     BOOL res=[test writeToFile:fileName atomically:YES encoding:NSUTF8StringEncoding error:nil];
     if (res) {
         NSLog(@"文件写入成功");
@@ -123,8 +124,6 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [self.objects removeObjectAtIndex:indexPath.row];
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
         
         NSFileManager *defaltManager = [NSFileManager defaultManager];
         //获取路径
@@ -134,9 +133,15 @@
         NSString *fileName = [ourDocumentPath stringByAppendingPathComponent:self.objects[indexPath.row]];
         
         [defaltManager removeItemAtPath:fileName error:nil];
+        
+        
+        [self.objects removeObjectAtIndex:indexPath.row];
+        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+       
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
     }
+    
 }
 
 @end

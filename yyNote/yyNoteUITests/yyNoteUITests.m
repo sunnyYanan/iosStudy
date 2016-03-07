@@ -35,6 +35,22 @@
 - (void)testExample {
     // Use recording to get started writing UI tests.
     // Use XCTAssert and related functions to verify your tests produce the correct results.
+    
+    XCUIApplication *app = [[XCUIApplication alloc] init];
+    XCUIElement *masterNavigationBar = app.navigationBars[@"Master"];
+    XCUIElement *addButton = masterNavigationBar.buttons[@"Add"];
+    [addButton tap];
+    [addButton tap];
+    [masterNavigationBar.buttons[@"Edit"] tap];
+    
+    XCUIElementQuery *tablesQuery = app.tables;
+    [tablesQuery.buttons[@"Delete 2016-01-06 16:01:83 +0800"] tap];
+    
+    XCUIElement *deleteButton = tablesQuery.buttons[@"Delete"];
+    [deleteButton tap];
+    [tablesQuery.buttons[@"Delete 2016-01-06 16:01:89 +0800"] tap];
+    [deleteButton tap];
+    
 }
 
 @end
